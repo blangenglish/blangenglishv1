@@ -1,112 +1,82 @@
-# Stripe Payment Integration
+# Edge Functions Testing Quick Reference
 
-Concise Stripe payment component, ready to use out of the box.
+## Running Specific Test Files
 
-## 📁 File Description
-
-```
-stripe/
-├── CheckoutForm.tsx     # Payment form component (includes Stripe initialization)
-└── README.md           # This document
-```
-
-## 🚀 Quick Start
-
-### 1. Configure Environment Variables
-
-Create a `.env` file in the project root directory:
-
+### Using npm scripts
 ```bash
-VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key_here
-```
+# Run a specific test file
+npm run test:edge-functions:file tests/my-function.test.ts
 
-### 2. Install Dependencies
+# Run all tests
+npm run test:edge-functions
 
+
+### Using Deno directly
 ```bash
-npm install @stripe/stripe-js @stripe/react-stripe-js
+# Run a specific test file
+deno test --allow-net --allow-env tests/my-function.test.ts
+
+# Run all tests in tests directory
+deno test --allow-net --allow-env tests/
+
+# Run tests matching a pattern
+deno test --allow-net --allow-env tests/*.test.ts
 ```
 
-### 3. Use Payment Form
+### Using Deno tasks
+```bash
+# Run a specific test file
+deno task test -- tests/my-function.test.ts
 
-```tsx
-import { Elements } from '@stripe/react-stripe-js';
-import { stripePromise, CheckoutForm } from './stripe/CheckoutForm';
-
-function App() {
-  return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm
-        paymentData={{
-          amount: 9900,  // $99.00 USD (in cents)
-          currency: 'usd',
-          productIds: ['product-1'],
-          customerInfo: {
-            name: 'John Doe',
-            email: 'john@example.com'
-          }
-        }}
-        onSuccess={(paymentIntent) => {
-          console.log('Payment successful!', paymentIntent);
-        }}
-        onError={(error) => {
-          console.error('Payment failed:', error);
-        }}
-      />
-    </Elements>
-  );
-}
+# Run all tests
+deno task test
 ```
 
-## 🔧 Component Description
+## Environment Variables Setup
 
-### CheckoutForm - Complete Payment Solution
-Includes Stripe initialization and payment form logic:
+### Option 1: Using .env File (Recommended)
+```bash
+# Create .env file from template
+cp tests/env.example .env
 
-```tsx
-import { Elements } from '@stripe/react-stripe-js';
-import { stripePromise, CheckoutForm } from './stripe/CheckoutForm';
-
-<Elements stripe={stripePromise}>
-  <CheckoutForm
-    paymentData={{
-      amount: 5000,
-      currency: 'usd',
-      productIds: ['prod-1'],
-      customerInfo: { name: 'User', email: 'user@example.com' }
-    }}
-    onSuccess={(paymentIntent) => {/* Handle success */}}
-    onError={(error) => {/* Handle error */}}
-  />
-</Elements>
+# Edit .env file with your actual values
+# The file will be automatically loaded when running tests
 ```
 
-### Exportable Features
-- `stripePromise` - Stripe instance
-- `CheckoutForm` - Payment form component
-- `validateStripeSetup` - Validate Stripe configuration
-- `getStripeInstance` - Get Stripe instance
-- `StripeConfig` - Configuration type interface
+### Option 2: Export Environment Variables
+```bash
+export SUPABASE_URL="https://your-project-ref.supabase.co"
+export SUPABASE_ANON_KEY="your-anon-key"
+```
 
-## 🧪 Testing
+### Environment Variables Loading Order
+1. **System environment variables** (exported in shell)
+2. **`.env` file** (automatically loaded with `--env-file=.env`)
+3. **Code-set variables** (using `Deno.env.set()`)
 
-Use test card numbers:
-- **Card Number**: 4242 4242 4242 4242
-- **Expiry**: Any future date
-- **CVC**: Any 3 digits
+## Test File Structure
 
-## ⚠️ Important Notes
+```typescript
+import { assertEquals, assertExists } from "../deps.ts"
 
-1. **Environment Variables**: Ensure `VITE_STRIPE_PUBLIC_KEY` is correctly configured
-2. **Amount Unit**: Pass amount in cents (e.g., 100 = $1.00)
-3. **Edge Function**: Need to create corresponding Supabase Edge Function to handle payments
+const FUNCTION_NAME = "your-function-name"
 
-## 🔍 FAQ
+Deno.test("Your Function - Basic Test", async () => {
+  // Your test implementation
+})
+```
 
-**Q: Payment form is blank?**
-A: Check if environment variables are correctly configured and if there are any error messages in the console
+## Available Test Files
 
-**Q: Payment failed?**  
-A: Confirm if Supabase Edge Function is running normally, check network requests
+- `remote-advanced.test.ts` - Advanced remote tests using fetch
+- `supabase-client.test.ts` - Tests using Supabase client library
+- `my-function.test.ts` - Template for custom function tests
 
-**Q: How to customize styles?**
-A: CheckoutForm component already includes complete functionality, you can customize layout by modifying component internal styles or wrapping with an outer div
+## Creating Edge Functions
+
+To create a new Edge Function:
+
+1. Create a new `.ts` file directly in the `supabase/edge_function/` directory
+2. Copy `example-function.ts` as a starting point
+3. Implement your function logic
+4. Create corresponding test files in the `tests/` directory

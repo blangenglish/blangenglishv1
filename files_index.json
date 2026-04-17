@@ -1,0 +1,25 @@
+{
+  "documents": [],
+  "tables_parsed": [],
+  "tables_source_info": [],
+  "images": [
+    {
+      "original_name": "Screenshot2473",
+      "file_name": "Screenshot2473.png",
+      "file_path": "/data/workspace/f79cae11-193b-4ea8-9e29-a2d409345e08/blang_academy/public/images/Screenshot2473.png",
+      "rel_path": "images/Screenshot2473.png",
+      "file_type": "png",
+      "category": "images"
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "by_category": {
+      "documents": 0,
+      "tables_parsed": 0,
+      "tables_source_info": 0,
+      "images": 1
+    },
+    "processing_time": null
+  }
+}
